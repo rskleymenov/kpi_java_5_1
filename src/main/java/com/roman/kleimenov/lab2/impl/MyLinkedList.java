@@ -4,11 +4,10 @@ import com.roman.kleimenov.lab2.MyList;
 
 import java.util.Arrays;
 
-class MyLinkedList implements MyList {
+public class MyLinkedList implements MyList {
     private Node first;
     private Node last;
     private int size;
-
 
     private static class Node {
         private Object value;
@@ -22,6 +21,7 @@ class MyLinkedList implements MyList {
         }
     }
 
+    @Override
     public void add(Object element) {
         Node lastNode = last;
         Node newNode = new Node(element, lastNode, null);
@@ -34,6 +34,7 @@ class MyLinkedList implements MyList {
         size++;
     }
 
+    @Override
     public void add(int index, Object element) {
         if (index == size) {
             Node lastNode = last;
@@ -57,16 +58,19 @@ class MyLinkedList implements MyList {
         }
     }
 
+    @Override
     public void addAll(Object[] elements) {
         Arrays.asList(elements).forEach(this::add);
     }
 
+    @Override
     public void addAll(int index, Object[] elements) {
         for (Object element : elements) {
             add(index++, element);
         }
     }
 
+    @Override
     public Object get(int index) {
         return getNode(index).value;
     }
@@ -85,6 +89,7 @@ class MyLinkedList implements MyList {
         return index >= 0 && index < size;
     }
 
+    @Override
     public Object remove(int index) {
         Node el = getNode(index);
         Object element = el.value;
@@ -110,11 +115,13 @@ class MyLinkedList implements MyList {
         return element;
     }
 
+    @Override
     public void set(int index, Object element) {
         Node node = getNode(index);
         node.value = element;
     }
 
+    @Override
     public int indexOf(Object value) {
         int index = 0;
         if (value == null) {
@@ -129,10 +136,12 @@ class MyLinkedList implements MyList {
         return -1;
     }
 
+    @Override
     public int size() {
         return size;
     }
 
+    @Override
     public Object[] toArray() {
         Object[] array = new Object[size];
         int i = 0;
