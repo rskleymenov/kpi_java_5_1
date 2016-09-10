@@ -7,10 +7,10 @@ import java.util.Set;
 
 public class CustomClassLoader extends ClassLoader {
 
-    public static final int BEGIN_INDEX = 17;
-    public static final String REGEX = "/";
-    public static final String REPLACEMENT = ".";
-    public static final String CLASS = ".class";
+    private static final int BEGIN_INDEX = 17;
+    private static final String REGEX = "/";
+    private static final String REPLACEMENT = ".";
+    private static final String CLASS = ".class";
     private String pathToClasses;
     private Set<String> localCache = new HashSet<>();
 
@@ -22,7 +22,7 @@ public class CustomClassLoader extends ClassLoader {
     @Override
     public Class<?> findClass(String className) throws ClassNotFoundException {
         try {
-            byte b[] = new LoaderUtils().fetchClassFromFS(pathToClasses + className + CLASS);
+            byte b[] = new LoaderUtils().fetchClassFromFolder(pathToClasses + className + CLASS);
             String bytes = new String(b);
             String packagePath = pathToClasses
                     .substring(BEGIN_INDEX, pathToClasses.length())

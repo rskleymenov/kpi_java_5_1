@@ -6,6 +6,7 @@ import java.util.Map;
 
 public class CustomLoader {
 
+    private static final String CLASS = ".class";
     private String pathToClasses;
     private ClassLoader parent;
     private Map<String, String> localClassCache = new HashMap<>();
@@ -18,7 +19,7 @@ public class CustomLoader {
 
     public Class<?> loadClass(String name) throws ClassNotFoundException {
         try {
-            byte[] b = new LoaderUtils().fetchClassFromFS(pathToClasses + name + ".class");
+            byte[] b = new LoaderUtils().fetchClassFromFolder(pathToClasses + name + CLASS);
             String bytes = new String(b);
             if (!bytes.equalsIgnoreCase(localClassCache.get(name))) {
                 localClassCache.put(name, bytes);
@@ -30,9 +31,4 @@ public class CustomLoader {
         }
         return loader.findClass(name);
     }
-
-    public void clear() {
-        loader.clearAssertionStatus();
-    }
-
 }
