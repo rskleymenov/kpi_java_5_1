@@ -4,7 +4,7 @@ import com.roman.kleimenov.lab2.MyList;
 
 import java.util.Arrays;
 
-public class MyArrayList implements MyList {
+public class MyArrayList<E> implements MyList<E> {
 
     private static final int DEFAULT_SIZE = 5;
     private Object[] data;
@@ -15,7 +15,7 @@ public class MyArrayList implements MyList {
     }
 
     @Override
-    public void add(Object element) {
+    public void add(E element) {
         checkCapacity(size + 1);
         checkForNull(element);
         data[size++] = element;
@@ -32,7 +32,7 @@ public class MyArrayList implements MyList {
     }
 
     @Override
-    public void add(int index, Object element) {
+    public void add(int index, E element) {
         checkIndex(index);
         checkCapacity(size + 1);
         checkForNull(element);
@@ -48,7 +48,8 @@ public class MyArrayList implements MyList {
     }
 
     @Override
-    public void addAll(Object[] elements) {
+    public void addAll(MyList<? extends E> el) {
+        E[] elements = el.toArray();
         int inputSize = elements.length;
         checkCapacity(size + inputSize);
         System.arraycopy(elements, 0, data, size, inputSize);
@@ -56,8 +57,9 @@ public class MyArrayList implements MyList {
     }
 
     @Override
-    public void addAll(int index, Object[] elements) {
+    public void addAll(int index, MyList<? extends E> el) {
         checkIndex(index);
+        E[] elements = el.toArray();
         int inputSize = elements.length;
         checkCapacity(size + inputSize);
         int numberOfMovedValues = size - index;
@@ -69,13 +71,13 @@ public class MyArrayList implements MyList {
     }
 
     @Override
-    public Object get(int index) {
+    public E get(int index) {
         checkIndex(index);
-        return data[index];
+        return (E) data[index];
     }
 
     @Override
-    public Object remove(int index) {
+    public E remove(int index) {
         checkIndex(index);
         Object valueToDelete = get(index);
         int step = 1;
@@ -84,18 +86,18 @@ public class MyArrayList implements MyList {
             System.arraycopy(data, index + step, data, index, numberOfMovedValues);
         }
         data[--size] = null;
-        return valueToDelete;
+        return (E) valueToDelete;
     }
 
     @Override
-    public void set(int index, Object element) {
+    public void set(int index, E element) {
         checkIndex(index);
         checkForNull(element);
         data[index] = element;
     }
 
     @Override
-    public int indexOf(Object element) {
+    public int indexOf(E element) {
         checkForNull(element);
         for (int i = 0; i < data.length; i++) {
             if (element.equals(data[i])) {
@@ -105,7 +107,7 @@ public class MyArrayList implements MyList {
         return -1;
     }
 
-    private void checkForNull(Object o) {
+    private void checkForNull(E o) {
         if (o == null) throw new IllegalArgumentException("Object can't be null!");
     }
 
@@ -115,7 +117,7 @@ public class MyArrayList implements MyList {
     }
 
     @Override
-    public Object[] toArray() {
-        return Arrays.copyOf(data, size);
+    public <E> E[] toArray() {
+        return (E[]) Arrays.copyOf(data, size);
     }
 }

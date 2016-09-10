@@ -9,8 +9,13 @@ import static org.junit.Assert.assertEquals;
 
 
 public class MyArrayListTest {
-    private static final Object[] ELEMENTS = {444, 555, 666};
-    private MyList list;
+    private static final MyList<Integer> ELEMENTS = new MyArrayList<>();
+    static {
+        ELEMENTS.add(444);
+        ELEMENTS.add(555);
+        ELEMENTS.add(666);
+    }
+    private MyList<Integer> list;
     private static final int SIZE = 50;
 
     @Before
@@ -28,8 +33,8 @@ public class MyArrayListTest {
 
     @Test
     public void shouldAddItemByIndex() {
-        int expected = 234;
-        int index = 25;
+        Integer expected = 234;
+        Integer index = 25;
         list.add(index, expected);
         assertEquals(SIZE + 1, list.size());
         assertEquals(expected, list.get(index));
@@ -37,7 +42,8 @@ public class MyArrayListTest {
 
     @Test
     public void shouldRemoveItemByIndex() {
-        assertEquals(15, list.remove(15));
+        Integer value = 15;
+        assertEquals(value, list.remove(value));
         assertEquals(SIZE - 1, list.size());
     }
 
@@ -104,9 +110,9 @@ public class MyArrayListTest {
     public void shouldAddAllWithoutIndex() {
         list.addAll(ELEMENTS);
         int size = list.size();
-        assertEquals(444, list.get(size - 3));
-        assertEquals(555, list.get(size - 2));
-        assertEquals(666, list.get(size - 1));
+        assertEquals(Integer.valueOf(444), list.get(size - 3));
+        assertEquals(Integer.valueOf(555), list.get(size - 2));
+        assertEquals(Integer.valueOf(666), list.get(size - 1));
         assertEquals(SIZE + 3, size);
     }
 
@@ -124,15 +130,15 @@ public class MyArrayListTest {
     public void shouldAddItemsByIndex() {
         list.addAll(SIZE / 2, ELEMENTS);
         assertEquals(SIZE + 3, list.size());
-        assertEquals(ELEMENTS[0], list.get(SIZE / 2));
-        assertEquals(ELEMENTS[1], list.get(SIZE / 2 + 1));
-        assertEquals(ELEMENTS[2], list.get(SIZE / 2 + 2));
+        assertEquals(ELEMENTS.get(0), list.get(SIZE / 2));
+        assertEquals(ELEMENTS.get(1), list.get(SIZE / 2 + 1));
+        assertEquals(ELEMENTS.get(2), list.get(SIZE / 2 + 2));
     }
 
     @Test
     public void shouldSetValue() {
-        int index = 5;
-        int element = 999;
+        Integer index = 5;
+        Integer element = 999;
         list.set(index, element);
         assertEquals(element, list.get(index));
     }

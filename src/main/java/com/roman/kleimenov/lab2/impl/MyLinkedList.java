@@ -4,17 +4,17 @@ import com.roman.kleimenov.lab2.MyList;
 
 import java.util.Arrays;
 
-public class MyLinkedList implements MyList {
-    private Node first;
-    private Node last;
+public class MyLinkedList<E> implements MyList<E> {
+    private Node<E> first;
+    private Node<E> last;
     private int size;
 
-    private static class Node {
-        private Object value;
-        private Node next;
-        private Node prev;
+    private static class Node<E> {
+        private E value;
+        private Node<E> next;
+        private Node<E> prev;
 
-        Node(Object value, Node prev, Node next) {
+        Node(E value, Node<E> prev, Node<E> next) {
             this.value = value;
             this.next = next;
             this.prev = prev;
@@ -22,9 +22,9 @@ public class MyLinkedList implements MyList {
     }
 
     @Override
-    public void add(Object element) {
-        Node lastNode = last;
-        Node newNode = new Node(element, lastNode, null);
+    public void add(E element) {
+        Node<E> lastNode = last;
+        Node<E> newNode = new Node<>(element, lastNode, null);
         last = newNode;
         if (lastNode == null) {
             first = newNode;
@@ -35,10 +35,10 @@ public class MyLinkedList implements MyList {
     }
 
     @Override
-    public void add(int index, Object element) {
+    public void add(int index, E element) {
         if (index == size) {
-            Node lastNode = last;
-            Node newNode = new Node(element, lastNode, null);
+            Node<E> lastNode = last;
+            Node<E> newNode = new Node<>(element, lastNode, null);
             last = newNode;
             if (lastNode == null)
                 first = newNode;
@@ -46,9 +46,9 @@ public class MyLinkedList implements MyList {
                 lastNode.next = newNode;
             size++;
         } else {
-            Node currentNode = getNode(index);
-            final Node previous = currentNode.prev;
-            final Node newNode = new Node(element, previous, currentNode);
+            Node<E> currentNode = getNode(index);
+            final Node<E> previous = currentNode.prev;
+            final Node<E> newNode = new Node<>(element, previous, currentNode);
             currentNode.prev = newNode;
             if (previous == null)
                 first = newNode;
@@ -59,27 +59,27 @@ public class MyLinkedList implements MyList {
     }
 
     @Override
-    public void addAll(Object[] elements) {
-        Arrays.asList(elements).forEach(this::add);
+    public void addAll(MyList<? extends E> elements) {
+        Arrays.asList(elements.toArray()).forEach(e -> this.add((E) e));
     }
 
     @Override
-    public void addAll(int index, Object[] elements) {
-        for (Object element : elements) {
-            add(index++, element);
+    public void addAll(int index, MyList<? extends E> elements) {
+        for (Object element : elements.toArray()) {
+            add(index++, (E) element);
         }
     }
 
     @Override
-    public Object get(int index) {
+    public E get(int index) {
         return getNode(index).value;
     }
 
-    private Node getNode(int index) {
+    private Node<E> getNode(int index) {
         if (!checkIndex(index)) {
             throw new IndexOutOfBoundsException("Invalid index: " + index);
         }
-        Node current = first;
+        Node<E> current = first;
         for (int i = 0; i < index; i++)
             current = current.next;
         return current;
@@ -90,11 +90,11 @@ public class MyLinkedList implements MyList {
     }
 
     @Override
-    public Object remove(int index) {
-        Node el = getNode(index);
-        Object element = el.value;
-        Node next = el.next;
-        Node prev = el.prev;
+    public E remove(int index) {
+        Node<E> el = getNode(index);
+        E element = el.value;
+        Node<E> next = el.next;
+        Node<E> prev = el.prev;
 
         if (prev == null) {
             first = next;
@@ -116,18 +116,18 @@ public class MyLinkedList implements MyList {
     }
 
     @Override
-    public void set(int index, Object element) {
-        Node node = getNode(index);
+    public void set(int index, E element) {
+        Node<E> node = getNode(index);
         node.value = element;
     }
 
     @Override
-    public int indexOf(Object value) {
+    public int indexOf(E value) {
         int index = 0;
         if (value == null) {
             throw new IllegalArgumentException("MyLinkedList is not supported null values");
         }
-        for (Node x = first; x != null; x = x.next) {
+        for (Node<E> x = first; x != null; x = x.next) {
             if (value.equals(x.value))
                 return index;
             index++;
@@ -142,11 +142,11 @@ public class MyLinkedList implements MyList {
     }
 
     @Override
-    public Object[] toArray() {
+    public <E> E[] toArray() {
         Object[] array = new Object[size];
         int i = 0;
         for (Node x = first; x != null; x = x.next)
             array[i++] = x.value;
-        return array;
+        return (E[]) array;
     }
 }

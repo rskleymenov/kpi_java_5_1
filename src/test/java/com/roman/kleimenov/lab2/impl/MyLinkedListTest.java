@@ -9,12 +9,18 @@ import static org.junit.Assert.assertEquals;
 
 public class MyLinkedListTest {
 
-    private MyList list;
+    private MyList<String> list;
     private static final int DEFAULT_SIZE = 6;
+    private static final MyList<String> ELEMENTS = new MyLinkedList<>();
+    static {
+        ELEMENTS.add("7");
+        ELEMENTS.add("8");
+        ELEMENTS.add("9");
+    }
 
     @Before
     public void init() {
-        list = new MyLinkedList();
+        list = new MyLinkedList<>();
         list.add("1");
         list.add("2");
         list.add("3");
@@ -96,7 +102,7 @@ public class MyLinkedListTest {
 
     @Test
     public void shouldAddAllItems() {
-        list.addAll(new Object[]{"7", "8", "9"});
+        list.addAll(ELEMENTS);
         assertEquals(DEFAULT_SIZE + 3, list.size());
         assertEquals("7", list.get(6));
         assertEquals("8", list.get(7));
@@ -105,7 +111,7 @@ public class MyLinkedListTest {
 
     @Test
     public void shouldAddAllItemsToIndex() {
-        list.addAll(1, new Object[]{"7", "8", "9"});
+        list.addAll(1, ELEMENTS);
         assertEquals(DEFAULT_SIZE + 3, list.size());
         assertEquals("7", list.get(1));
         assertEquals("8", list.get(2));
