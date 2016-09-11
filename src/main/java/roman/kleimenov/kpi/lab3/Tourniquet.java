@@ -2,6 +2,7 @@ package roman.kleimenov.kpi.lab3;
 
 import roman.kleimenov.kpi.lab3.cards.Card;
 import roman.kleimenov.kpi.lab3.cards.impl.CumulativeCard;
+import roman.kleimenov.kpi.lab3.enums.CardType;
 import roman.kleimenov.kpi.lab3.enums.TripNumber;
 import roman.kleimenov.kpi.lab3.enums.Validity;
 
@@ -9,38 +10,88 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-// TODO: 9/11/2016 IMPLEMENT STATISTIC
 public class Tourniquet {
-    private static Tourniquet INSTANCE;
     private static BigDecimal TICKET_PRICE;
     private final CardsRegistry cardsRegistry = CardsRegistry.getInstance();
+    private static List<Card> successfulAttemptsCard;
+    private static List<Card> unsuccessfulAttemptsCard;
 
     private Tourniquet(String ticketPrice) {
         TICKET_PRICE = new BigDecimal(ticketPrice);
-        INSTANCE = new Tourniquet(ticketPrice);
+        successfulAttemptsCard = new ArrayList<>();
+        unsuccessfulAttemptsCard = new ArrayList<>();
     }
 
     public static Tourniquet getInstance(String ticketPrice) {
-        return INSTANCE;
+        return new Tourniquet(ticketPrice);
+    }
+
+    public static void clearAttemptsStatistic() {
+        successfulAttemptsCard.clear();
+        unsuccessfulAttemptsCard.clear();
     }
 
     public boolean proceed(Card card) {
+        if (isDataPresence(card)) {
+            unsuccessfulAttemptsCard.add(card);
+            return false;
+        }
         if (cardsRegistry.isNotFakeCard(card)) {
             if (!isCardHasRightValidity(card)) {
+                unsuccessfulAttemptsCard.add(card);
                 return false;
             }
 
             if (!isCardHasUnusedTrips(card)) {
+                unsuccessfulAttemptsCard.add(card);
                 return false;
             }
 
             if (!isCardHasPossibleBalance(card)) {
+                unsuccessfulAttemptsCard.add(card);
                 return false;
             }
+            successfulAttemptsCard.add(card);
             return true;
         }
+        unsuccessfulAttemptsCard.add(card);
         return false;
+    }
+
+    private boolean isDataPresence(Card card) {
+        return card.getId() < 0 ||
+               card.getId() > Long.MAX_VALUE ||
+               card.getCardType() == null ||
+               card.getValidity() == null ||
+               card.getTripNumber() == null ||
+               card.getUsedTrips() < 0 ||
+               card.getUsedTrips() > Long.MAX_VALUE ||
+               card.getCreationTime() == null;
+    }
+
+    public Map<CardType, Long> getTotalSuccessAttemptsByCardTypes() {
+        return successfulAttemptsCard
+                .stream()
+                .collect(Collectors.groupingBy(Card::getCardType, Collectors.counting()));
+    }
+
+    public Map<CardType, Long> getTotalUnSuccessAttemptsByCardTypes() {
+        return unsuccessfulAttemptsCard
+                .stream()
+                .collect(Collectors.groupingBy(Card::getCardType, Collectors.counting()));
+    }
+
+    public int getTotalSuccessAttempts() {
+        return successfulAttemptsCard.size();
+    }
+
+    public int getTotalUnSuccessAttempts() {
+        return unsuccessfulAttemptsCard.size();
     }
 
     private boolean isCardHasPossibleBalance(Card card) {
@@ -48,7 +99,7 @@ public class Tourniquet {
             CumulativeCard cumulativeCard = (CumulativeCard) card;
             BigDecimal balance = cumulativeCard.getBalance();
             BigDecimal remainedValue = balance.subtract(TICKET_PRICE);
-            if (remainedValue.signum() > 0) {
+            if (remainedValue.signum() >= 0) {
                 cumulativeCard.setBalance(remainedValue);
                 return true;
             }
@@ -58,26 +109,25 @@ public class Tourniquet {
     }
 
     private boolean isCardHasUnusedTrips(Card card) {
-        TripNumber tripNumber = card.getTripNumber();
-        int usedTrips = card.getUsedTrips();
-        switch (tripNumber) {
-            case FIVE: {
-                if (usedTrips > 5) {
-                    return false;
+        if (!(card instanceof CumulativeCard)) {
+            TripNumber tripNumber = card.getTripNumber();
+            int usedTrips = card.getUsedTrips();
+            switch (tripNumber) {
+                case FIVE: {
+                    if (usedTrips >= 5) {
+                        return false;
+                    }
+                    break;
                 }
-                break;
-            }
-            case TEN: {
-                if (usedTrips > 10) {
-                    return false;
+                case TEN: {
+                    if (usedTrips >= 10) {
+                        return false;
+                    }
+                    break;
                 }
-                break;
             }
-            case UNLIMITED: {
-                return true;
-            }
+            card.setUsedTrips(++usedTrips);
         }
-        card.setUsedTrips(++usedTrips);
         return true;
     }
 

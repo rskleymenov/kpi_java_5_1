@@ -1,6 +1,7 @@
 package roman.kleimenov.kpi.lab3.cards.impl;
 
 import roman.kleimenov.kpi.lab3.cards.Card;
+import roman.kleimenov.kpi.lab3.enums.TripNumber;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -12,7 +13,7 @@ public class CumulativeCard extends Card {
     private BigDecimal balance = BigDecimal.ZERO;
 
     public CumulativeCard() {
-        super(DEFAULT, UNLIMITED);
+        super(DEFAULT, UNLIMITED, TripNumber.UNLIMITED);
     }
 
     public BigDecimal getBalance() {

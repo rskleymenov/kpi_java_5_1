@@ -1,7 +1,10 @@
 package roman.kleimenov.kpi.lab3;
 
 import roman.kleimenov.kpi.lab3.cards.Card;
-import roman.kleimenov.kpi.lab3.cards.impl.*;
+import roman.kleimenov.kpi.lab3.cards.impl.CumulativeCard;
+import roman.kleimenov.kpi.lab3.cards.impl.DefaultCard;
+import roman.kleimenov.kpi.lab3.cards.impl.SchoolCard;
+import roman.kleimenov.kpi.lab3.cards.impl.StudentCard;
 
 public class CardFactory {
     private static final CardFactory INSTANCE = new CardFactory();

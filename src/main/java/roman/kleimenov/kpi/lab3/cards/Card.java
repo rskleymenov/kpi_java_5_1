@@ -20,10 +20,11 @@ public abstract class Card {
         creationTime = LocalDateTime.now();
     }
 
-    public Card(CardType cardType, Validity validity) {
+    public Card(CardType cardType, Validity validity, TripNumber tripNumber) {
         this.cardType = cardType;
         this.validity = validity;
-        creationTime = LocalDateTime.now();
+        this.creationTime = LocalDateTime.now();
+        this.tripNumber = tripNumber;
     }
 
     public long getId() {

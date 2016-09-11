@@ -42,11 +42,10 @@ public class CardsRegistry {
         return initCard(validity, tripNumber, creationTime, defaultCard);
     }
 
-    public Card issueCumulativeCard(Validity validity, TripNumber tripNumber,
-                                    LocalDateTime creationTime, BigDecimal amount) {
+    public Card issueCumulativeCard(BigDecimal amount) {
         Card cumulativeCard = CardFactory.getInstance().getCumulativeCard();
         ((CumulativeCard) cumulativeCard).setBalance(amount);
-        return initCard(validity, tripNumber, creationTime, cumulativeCard);
+        return initCard(Validity.UNLIMITED, TripNumber.UNLIMITED, LocalDateTime.now(), cumulativeCard);
     }
 
     public boolean payCumulativeCard(Card card, BigDecimal bigDecimal) {
@@ -56,6 +55,11 @@ public class CardsRegistry {
             return true;
         }
         return false;
+    }
+
+    public static void clearRegister() {
+        lastCardNumber = 0;
+        issuedCards.clear();
     }
 
     private Card initCard(Validity validity, TripNumber tripNumber, LocalDateTime creationTime, Card card) {
