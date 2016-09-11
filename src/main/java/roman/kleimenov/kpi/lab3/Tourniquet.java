@@ -63,27 +63,12 @@ public class Tourniquet {
         return false;
     }
 
-    private boolean isDataPresence(Card card) {
-        return card.getId() < 0 ||
-               card.getId() > Long.MAX_VALUE ||
-               card.getCardType() == null ||
-               card.getValidity() == null ||
-               card.getTripNumber() == null ||
-               card.getUsedTrips() < 0 ||
-               card.getUsedTrips() > Long.MAX_VALUE ||
-               card.getCreationTime() == null;
-    }
-
     public Map<CardType, Long> getTotalSuccessAttemptsByCardTypes() {
-        return successfulAttemptsCard
-                .stream()
-                .collect(Collectors.groupingBy(Card::getCardType, Collectors.counting()));
+        return getGroupByCardType(successfulAttemptsCard);
     }
 
     public Map<CardType, Long> getTotalUnSuccessAttemptsByCardTypes() {
-        return unsuccessfulAttemptsCard
-                .stream()
-                .collect(Collectors.groupingBy(Card::getCardType, Collectors.counting()));
+        return getGroupByCardType(unsuccessfulAttemptsCard);
     }
 
     public int getTotalSuccessAttempts() {
@@ -92,6 +77,22 @@ public class Tourniquet {
 
     public int getTotalUnSuccessAttempts() {
         return unsuccessfulAttemptsCard.size();
+    }
+
+    private boolean isDataPresence(Card card) {
+        return card.getId() < 0 ||
+                card.getId() > Long.MAX_VALUE ||
+                card.getCardType() == null ||
+                card.getValidity() == null ||
+                card.getTripNumber() == null ||
+                card.getUsedTrips() < 0 ||
+                card.getUsedTrips() > Long.MAX_VALUE ||
+                card.getCreationTime() == null;
+    }
+
+    private Map<CardType, Long> getGroupByCardType(List<Card> cards) {
+        return cards.stream()
+                .collect(Collectors.groupingBy(Card::getCardType, Collectors.counting()));
     }
 
     private boolean isCardHasPossibleBalance(Card card) {
