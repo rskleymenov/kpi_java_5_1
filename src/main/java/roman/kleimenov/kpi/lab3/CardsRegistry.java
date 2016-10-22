@@ -4,16 +4,21 @@ import roman.kleimenov.kpi.lab3.cards.Card;
 import roman.kleimenov.kpi.lab3.cards.impl.CumulativeCard;
 import roman.kleimenov.kpi.lab3.enums.TripNumber;
 import roman.kleimenov.kpi.lab3.enums.Validity;
+import roman.kleimenov.kpi.lab3.factory.CardFactory;
+import roman.kleimenov.kpi.lab3.validator.CardValidator;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class CardsRegistry {
     private static long lastCardNumber = 0;
     private final static CardsRegistry INSTANCE = new CardsRegistry();
     private static List<Card> issuedCards = new ArrayList<>();
+    private static Set<CardValidator> cardRules = new HashSet<>();
 
     private CardsRegistry() {
 
@@ -60,6 +65,30 @@ public class CardsRegistry {
     public static void clearRegister() {
         lastCardNumber = 0;
         issuedCards.clear();
+        cardRules.clear();
+    }
+
+    public boolean isDataPresence(Card card) {
+        return card.getId() < 0 ||
+                card.getId() > Long.MAX_VALUE ||
+                card.getCardType() == null ||
+                card.getValidity() == null ||
+                card.getTripNumber() == null ||
+                card.getUsedTrips() < 0 ||
+                card.getUsedTrips() > Long.MAX_VALUE ||
+                card.getCreationTime() == null;
+    }
+
+    public boolean addCardRule(CardValidator cardValidator) {
+        return this.cardRules.add(cardValidator);
+    }
+
+    public boolean removeCardRule(CardValidator cardValidator) {
+        return this.cardRules.remove(cardValidator);
+    }
+
+    public Set<CardValidator> getCardRules() {
+        return new HashSet<>(this.cardRules);
     }
 
     private Card initCard(Validity validity, TripNumber tripNumber, LocalDateTime creationTime, Card card) {

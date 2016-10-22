@@ -6,6 +6,9 @@ import org.junit.Test;
 import roman.kleimenov.kpi.lab3.cards.Card;
 import roman.kleimenov.kpi.lab3.cards.impl.DefaultCard;
 import roman.kleimenov.kpi.lab3.enums.CardType;
+import roman.kleimenov.kpi.lab3.validator.impl.CardBalanceValidator;
+import roman.kleimenov.kpi.lab3.validator.impl.CardUnusedTripsValidator;
+import roman.kleimenov.kpi.lab3.validator.impl.CardValidityValidator;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -19,12 +22,15 @@ import static roman.kleimenov.kpi.lab3.enums.Validity.TEN_DAYS;
 
 public class TourniquetTest {
     private static final String TICKET_PRICE = "3";
-    private Tourniquet tourniquet = Tourniquet.getInstance(TICKET_PRICE);
+    private Tourniquet tourniquet = Tourniquet.getInstance();
     private CardsRegistry cardsRegistry = CardsRegistry.getInstance();
 
     @Before
     public void init() {
         CardsRegistry.clearRegister();
+        cardsRegistry.addCardRule(new CardBalanceValidator(TICKET_PRICE));
+        cardsRegistry.addCardRule(new CardUnusedTripsValidator());
+        cardsRegistry.addCardRule(new CardValidityValidator());
     }
 
     @After

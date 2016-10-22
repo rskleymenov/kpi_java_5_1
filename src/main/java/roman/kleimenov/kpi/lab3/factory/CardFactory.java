@@ -1,4 +1,4 @@
-package roman.kleimenov.kpi.lab3;
+package roman.kleimenov.kpi.lab3.factory;
 
 import roman.kleimenov.kpi.lab3.cards.Card;
 import roman.kleimenov.kpi.lab3.cards.impl.CumulativeCard;
